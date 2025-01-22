@@ -1,4 +1,3 @@
-Datashow.clj
 (ns gerenciadorDeDataShow.models.Datashow)
 
 

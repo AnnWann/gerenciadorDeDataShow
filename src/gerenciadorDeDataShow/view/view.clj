@@ -84,7 +84,7 @@
               (let [inicio (read-line)]
                 (log "Digite o horário de término:")
                 (let [fim (read-line)]
-                  (aula-controller/newAula matricula data inicio fim)
+                  (aula-controller/newAula ())
                   (log "Aula criada!"))))))
     "8" (do
           (log "Lista de Aulas:")
