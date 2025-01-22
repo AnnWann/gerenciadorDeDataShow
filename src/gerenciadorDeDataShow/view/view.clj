@@ -93,15 +93,4 @@
               (show-aula aula))))
     "9" (log "Função de atualizar aulas não implementada ainda.")
     "10" (log "Função de remover aulas não implementada ainda.")
-    "11" (log "Saindo do programa.")
     (log "Opção inválida.")))
-
-(defn main-loop []
-  (loop []
-    (show-menu)
-    (let [choice (read-line)]
-      (if (= choice "11")
-        (log "Programa encerrado.")
-        (do
-          (handle-input choice)
-          (recur))))))
