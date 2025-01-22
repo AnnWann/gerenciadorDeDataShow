@@ -4,6 +4,30 @@
             [controller.AulaController :as aulaController]
             [clojure.string :as str]))
 
+(defn show-professor [professor]
+  (println "=== Detalhes do Professor ===")
+  (println (str "Nome: " (:nome professor)))
+  (println (str "Matrícula: " (:matricula professor)))
+  (println "============================="))
+
+(defn show-datashow [datashow]
+  (println "=== Detalhes do Datashow ===")
+  (println (str "ID: " (:id datashow)))
+  (println (str "Disponível: " (:disponivel datashow)))
+  (println "============================="))
+
+(defn show-aula [aula]
+  (println "=== Detalhes da Aula ===")
+  (println (str "ID: " (:id aula)))
+  (println (str "Professor: " (:professor aula)))
+  (println (str "Data: " (:data aula)))
+  (println (str "Horário de Início: " (:horarioInicio aula)))
+  (println (str "Horário de Fim: " (:horarioFim aula)))
+  (println "========================"))
+
+(defn log [message]
+  (println message))
+
 (defn show-menu []
   (println "=== Menu Principal ===")
   (println "1. Adicionar Professor")
@@ -22,48 +46,62 @@
 (defn handle-input [choice]
   (case choice
     "1" (do
-          (println "Digite o nome do professor:")
+          (log "Digite o nome do professor:")
           (let [nome (read-line)]
-            (println "Digite a matrícula:")
+            (log "Digite a matrícula:")
             (let [matricula (read-line)]
               (professor-controller/newProfessor nome matricula)
-              (println "Professor adicionado"))))
+              (log "Professor adicionado!"))))
     "2" (do
-          (println "Digite a matrícula do professor para remover:")
+          (log "Digite a matrícula do professor para remover:")
           (let [matricula (read-line)]
             (professor-controller/eraseProfessor matricula)
-            (println "Professor removido!")))
-    "3" (println "Função de listar professores não implementada ainda.")
-    "4" (datashow-controller/newDatashow)
+            (log "Professor removido!")))
+    "3" (do
+          (log "Lista de Professores:")
+          (let [professores (professor-controller/getAllProfessors)]
+            (doseq [professor professores]
+              (show-professor professor))))
+    "4" (do
+          (datashow-controller/newDatashow)
+          (log "Datashow adicionado!"))
     "5" (do
-          (println "Digite o ID do datashow para remover:")
+          (log "Digite o ID do datashow para remover:")
           (let [id (read-line)]
             (datashow-controller/eraseDatashow id)
-            (println "Datashow removido")))
-    "6" (println "Função de listar datashows não implementada ainda.")
+            (log "Datashow removido!")))
+    "6" (do
+          (log "Lista de Datashows:")
+          (let [datashows (datashow-controller/getAllDatashows)]
+            (doseq [datashow datashows]
+              (show-datashow datashow))))
     "7" (do
-          (println "Digite a matrícula do professor:")
+          (log "Digite a matrícula do professor:")
           (let [matricula (read-line)]
-            (println "Digite a data da aula:")
+            (log "Digite a data da aula:")
             (let [data (read-line)]
-              (println "Digite o horário de início:")
+              (log "Digite o horário de início:")
               (let [inicio (read-line)]
-                (println "Digite o horário de término:")
+                (log "Digite o horário de término:")
                 (let [fim (read-line)]
                   (aula-controller/newAula matricula data inicio fim)
-                  (println "Aula criada!"))))))
-    "8" (println "Função de listar aulas não implementada ainda.")
-    "9" (println "Função de atualizar aulas não implementada ainda.")
-    "10" (println "Função de remover aulas não implementada ainda.")
-    "11" (println "Saindo do programa.")
-    (println "Opção inválida.")))
+                  (log "Aula criada!"))))))
+    "8" (do
+          (log "Lista de Aulas:")
+          (let [aulas (aula-controller/getAllAulas)]
+            (doseq [aula aulas]
+              (show-aula aula))))
+    "9" (log "Função de atualizar aulas não implementada ainda.")
+    "10" (log "Função de remover aulas não implementada ainda.")
+    "11" (log "Saindo do programa.")
+    (log "Opção inválida.")))
 
 (defn main-loop []
   (loop []
     (show-menu)
     (let [choice (read-line)]
       (if (= choice "11")
-        (println "Programa encerrado.")
+        (log "Programa encerrado.")
         (do
           (handle-input choice)
           (recur))))))
