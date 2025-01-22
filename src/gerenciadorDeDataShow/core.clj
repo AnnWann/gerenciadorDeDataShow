@@ -16,7 +16,8 @@
     (let [choice (read-line)]
       (if (= choice "11")
         ((log "Programa encerrado.")
-         db-connection/close-connection)
+         (db-connection/close-connection)
+         (System/exit 0))
         (do
           (handle-input choice)
           (recur))))))
