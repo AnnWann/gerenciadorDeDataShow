@@ -10,8 +10,7 @@
                  :return-keys? true))
 
 (defn read-all-professors []
-  (jdbc/query connection/get-db ["SELECT * FROM professor"]))
+  (jdbc/execute! connection/get-db ["SELECT * FROM professor"]))
 
 (defn delete-professor [matricula]
   (jdbc/execute! connection/get-db ["DELETE FROM professor WHERE matricula = ?" matricula]))
-

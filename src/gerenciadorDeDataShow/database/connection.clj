@@ -29,9 +29,6 @@
                      FOREIGN KEY (id_professor) REFERENCES professor(matricula),
                      FOREIGN KEY (id_datashow) REFERENCES datashows(id))"]))
 
-(defn close-connection []
-  (jdbc/close ds))
-
 (defn get-db [] ds)
 
                     

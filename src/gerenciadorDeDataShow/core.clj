@@ -4,7 +4,8 @@
    [gerenciadorDeDataShow.view.view :as view]
    [gerenciadorDeDataShow.database.connection :as DB-connection]))
 
-(defn -main
+
+(defn greet
   "I don't do a whole lot ... yet."
   [& args]
   (DB-connection/init-db)
@@ -13,7 +14,6 @@
     (let [choice (read-line)]
       (if (= choice "11")
         ((view/log "Programa encerrado.")
-         (DB-connection/close-connection)
          (System/exit 0))
         (do
           (view/handle-input choice)

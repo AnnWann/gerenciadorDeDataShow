@@ -48,21 +48,29 @@
   (case choice
     "1" (do
           (log "Digite o nome do professor para adicionar:")
-          (let [nome (read-line)]
-            (professor-controller/new-professor nome)))
+          (let [nome (read-line) matricula (professor-controller/new-professor nome)]
+            (log (str "Professor adicionado com matrícula: " matricula)))
+          )
     "2" (do 
           (log "Digite o nome do professor para remover:")
           (let [nome (read-line)]
-            (professor-controller/erase-professor (hash nome))))
+            (professor-controller/erase-professor (hash nome))
+            (log "Professor removido com sucesso!")))
     "3" (do
           (log "Listando professores: ")
-          ((professor-controller/get-all-professors)))
-    "4" ((datashow-controller/new-datashow))
+          (let [professors (professor-controller/get-all-professors)]
+            (doseq [professor professors]
+              (show-professor professor))))
+    "4" ((let [datashowId (datashow-controller/new-datashow)]
+           (log (str "Datashow adicionado com ID: " datashowId)))) 
     "5" (do
           (log "Digite o ID do datashow para remover:")
           (let [id (read-line)]
-            (datashow-controller/erase-datashow id)))
-    "6" ((datashow-controller/get-all-datashows))
+            (datashow-controller/erase-datashow id)
+            (log "Datashow removido com sucesso!")))
+    "6" (let [datashows (datashow-controller/get-all-datashows)]
+          (doseq [datashow datashows]
+            (show-datashow datashow)))
     "7" (do
           (log "Digite a matrícula do professor:")
           (let [matricula (read-line)]
@@ -71,8 +79,10 @@
               (log "Digite o horário de início:")
               (let [inicio (read-line)]
                 (log "Digite o horário de término:")
-                (let [fim (read-line) aula (Aula/->Aula nil data inicio fim nil matricula)] 
-                  (aula-controller/new-aula aula))))))
+                (let [fim (read-line) aula (Aula/->Aula nil data inicio fim nil matricula)
+                  aula-id (aula-controller/new-aula aula)]
+                    ((log (str "Aula criada com ID: " aula-id))))))))
+          
     "8" (do
           (log "Lista de Aulas:")
           (let [aulas (aula-controller/get-all-aulas)]
@@ -80,14 +90,20 @@
               (show-aula aula))))
     "9" (do
           (log "Digite o ID da aula:")
-          (let [id (read-line)]
-            (aula-controller/get-available-datashow-for-aula id))
-          ) 
+          (let [id (read-line) 
+                datashows (aula-controller/get-available-datashow-for-aula id)]
+              (if (empty? datashows)
+                (log "Não há datashows disponíveis para esta aula.")
+                (do
+                  (log "Datashows disponíveis para aula: ")
+                  (doseq [datashow datashows]
+                    (show-datashow datashow))))))
     "10" (do
            (log "Digite o ID do datashow:")
            (let [datashow-id (read-line)]
              (log "Digite o ID da aula:")
              (let [aula-id (read-line)]
-               (aula-controller/put-datashow-in-aula datashow-id aula-id))))
+               (aula-controller/put-datashow-in-aula datashow-id aula-id))
+             (log "Datashow alocado para aula.")))
     "11" (log "Função de remover aulas não implementada ainda.")
     (log "Opção inválida.")))

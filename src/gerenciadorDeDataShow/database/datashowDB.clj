@@ -12,7 +12,7 @@
                  :return-keys? true))
 
 (defn read-all-datashows []
-  (let [datashows (jdbc/query connection/get-db ["SELECT * FROM datashows"])]
+  (let [datashows (jdbc/execute! connection/get-db ["SELECT * FROM datashows"])]
      (map (fn [row] (dt/->Datashow (:id row))) datashows)))
 
 (defn delete-datashow [id]

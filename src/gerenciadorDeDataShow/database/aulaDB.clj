@@ -10,13 +10,13 @@
                  :return-keys? true))
 
 (defn read-aula [id] 
-  (jdbc/query connection/get-db ["SELECT * FROM aula WHERE id = ?" id]))
+  (jdbc/execute-one! connection/get-db ["SELECT * FROM aula WHERE id = ?" id]))
 
 (defn read-all-aulas []
-  (jdbc/query connection/get-db ["SELECT * FROM aula"]))
+  (jdbc/execute! connection/get-db ["SELECT * FROM aula"]))
 
 (defn read-aula-on-day [data]
-  (jdbc/query connection/get-db ["SELECT * FROM aula WHERE data = ?" data]))
+  (jdbc/execute! connection/get-db ["SELECT * FROM aula WHERE data = ?" data]))
 
 (defn update-aula [aula]
   (jdbc/execute! connection/get-db ["UPDATE aula SET data = ?, horario_inicio = ?, horario_fim = ?, id_professor = ? WHERE id = ?" (:data aula) (:horario_inicio aula) (:horario_final aula) (:id_professor aula) (:id aula)]))
