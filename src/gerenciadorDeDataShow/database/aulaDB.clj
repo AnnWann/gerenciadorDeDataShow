@@ -12,6 +12,9 @@
 (defn read-aula [id] 
   (jdbc/query connection/get-db ["SELECT * FROM aula WHERE id = ?" id]))
 
+(defn read-all-aulas []
+  (jdbc/query connection/get-db ["SELECT * FROM aula"]))
+
 (defn read-aula-on-day [data]
   (jdbc/query connection/get-db ["SELECT * FROM aula WHERE data = ?" data]))
 

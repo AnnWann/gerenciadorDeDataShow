@@ -9,12 +9,6 @@
                  (:matricula professor) (:nome professor)
                  :return-keys? true))
 
-(defn read-professor-by-name [nome]
-  (jdbc/query connection/get-db ["SELECT * FROM professor WHERE nome = ?" nome]))
-
-(defn read-professor [matricula]
-  (jdbc/query connection/get-db ["SELECT * FROM professor WHERE matricula = ?" matricula]))
-
 (defn read-all-professors []
   (jdbc/query connection/get-db ["SELECT * FROM professor"]))
 

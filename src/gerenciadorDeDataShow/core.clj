@@ -1,10 +1,7 @@
 (ns gerenciadorDeDataShow.core
   (:gen-class)
-  (:require
-   [gerenciadorDeDataShow.controlador.ProfessorController :as prof-ctrl]
-   [gerenciadorDeDataShow.controlador.DatashowController :as ds-ctrl]
-   [gerenciadorDeDataShow.controlador.AulaController :as aula-ctrl]
-   [gerenciadorDeDataShow.view.View :as view]
+  (:require 
+   [gerenciadorDeDataShow.view.view :as view]
    [gerenciadorDeDataShow.database.connection :as DB-connection]))
 
 (defn -main
@@ -12,12 +9,12 @@
   [& args]
   (DB-connection/init-db)
   (loop []
-    (show-menu)
+    (view/show-menu)
     (let [choice (read-line)]
       (if (= choice "11")
-        ((log "Programa encerrado.")
-         (db-connection/close-connection)
+        ((view/log "Programa encerrado.")
+         (DB-connection/close-connection)
          (System/exit 0))
         (do
-          (handle-input choice)
+          (view/handle-input choice)
           (recur))))))

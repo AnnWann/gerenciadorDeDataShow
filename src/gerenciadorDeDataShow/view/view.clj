@@ -1,8 +1,8 @@
-(ns view
-  (:require [controller.ProfessorController :as professorController]
-            [controller.DatashowController :as datashowController]
-            [controller.AulaController :as aulaController]
-            [clojure.string :as str]))
+(ns gerenciadorDeDataShow.view.view
+  (:require [gerenciadorDeDataShow.controller.professorController :as professor-controller]
+           [gerenciadorDeDataShow.controller.datashowController :as datashow-controller]
+           [gerenciadorDeDataShow.controller.aulaController :as aula-controller]
+            [gerenciadorDeDataShow.models.Aula :as Aula]))
 
 (defn show-professor [professor]
   (println "=== Detalhes do Professor ===")
@@ -38,43 +38,32 @@
   (println "6. Listar Datashows")
   (println "7. Criar Aula")
   (println "8. Listar Aulas")
-  (println "9. Atualizar Aula")
-  (println "10. Remover Aula")
-  (println "11. Sair")
+  (println "9. Listar Datashows Disponíveis para Aula")
+  (println "10. Alocar Datashow para Aula")
+  (println "11. Remover Aula")
+  (println "12. Sair")
   (println "Escolha uma opção:"))
 
 (defn handle-input [choice]
   (case choice
     "1" (do
-          (log "Digite o nome do professor:")
+          (log "Digite o nome do professor para adicionar:")
           (let [nome (read-line)]
-            (log "Digite a matrícula:")
-            (let [matricula (read-line)]
-              (professor-controller/newProfessor nome matricula)
-              (log "Professor adicionado!"))))
-    "2" (do
-          (log "Digite a matrícula do professor para remover:")
-          (let [matricula (read-line)]
-            (professor-controller/eraseProfessor matricula)
-            (log "Professor removido!")))
+            (professor-controller/new-professor nome)))
+    "2" (do 
+          (log "Digite o nome do professor para remover:")
+          (let [nome (read-line)]
+            (professor-controller/erase-professor (hash nome))))
     "3" (do
-          (log "Lista de Professores:")
-          (let [professores (professor-controller/getAllProfessors)]
-            (doseq [professor professores]
-              (show-professor professor))))
+          (log "Listando professores: ")
+          ((professor-controller/get-all-professors)))
     "4" (do
-          (datashow-controller/newDatashow)
-          (log "Datashow adicionado!"))
+          (datashow-controller/new-datashow))
     "5" (do
           (log "Digite o ID do datashow para remover:")
           (let [id (read-line)]
-            (datashow-controller/eraseDatashow id)
-            (log "Datashow removido!")))
-    "6" (do
-          (log "Lista de Datashows:")
-          (let [datashows (datashow-controller/getAllDatashows)]
-            (doseq [datashow datashows]
-              (show-datashow datashow))))
+            (datashow-controller/erase-datashow id)))
+    "6" ((datashow-controller/get-all-datashows))
     "7" (do
           (log "Digite a matrícula do professor:")
           (let [matricula (read-line)]
@@ -83,14 +72,23 @@
               (log "Digite o horário de início:")
               (let [inicio (read-line)]
                 (log "Digite o horário de término:")
-                (let [fim (read-line)]
-                  (aula-controller/newAula ())
-                  (log "Aula criada!"))))))
+                (let [fim (read-line) aula (Aula/->Aula nil data inicio fim nil matricula)] 
+                  (aula-controller/new-aula aula))))))
     "8" (do
           (log "Lista de Aulas:")
-          (let [aulas (aula-controller/getAllAulas)]
+          (let [aulas (aula-controller/get-all-aulas)]
             (doseq [aula aulas]
               (show-aula aula))))
-    "9" (log "Função de atualizar aulas não implementada ainda.")
-    "10" (log "Função de remover aulas não implementada ainda.")
+    "9" (do
+          (log "Digite o ID da aula:")
+          (let [id (read-line)]
+            (aula-controller/get-available-datashow-for-aula id))
+          ) 
+    "10" (do
+           (log "Digite o ID do datashow:")
+           (let [datashow-id (read-line)]
+             (log "Digite o ID da aula:")
+             (let [aula-id (read-line)]
+               (aula-controller/put-datashow-in-aula datashow-id aula-id))))
+    "11" (log "Função de remover aulas não implementada ainda.")
     (log "Opção inválida.")))
