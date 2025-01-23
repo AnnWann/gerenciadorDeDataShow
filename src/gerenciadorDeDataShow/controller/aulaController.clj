@@ -2,20 +2,29 @@
   (:require
     [gerenciadorDeDataShow.database.aulaDB :as aulaDB]
     [gerenciadorDeDataShow.database.datashowDB :as datashowDB]
-    [controller.ProfessorController :as professorController]
-    [controller.DatashowController :as datashowController]
-    [controller.AulaController :as aulaController]
-    [clojure.string :as str]))
+    [gerenciadorDeDataShow.view.view :as view]))
 
-(defn newAula [matriculaProfessor data horarioInicio horarioFim]
+(defn new-aula [matriculaProfessor data horarioInicio horarioFim]
   (aulaDB/create-aula {:data data :horario_inicio horarioInicio :horario_final horarioFim :id_professor matriculaProfessor}))
 
-(defn getAvailableDatashowForAula [aula]
-  (let [datashows (datashowDB/read-all-datashows)]
-    datashows))
+(defn get-all-aulas []
+  (let [aulas (aulaDB/read-all-aulas)]
+    (view/log "Listando aulas: ")
+    (doseq [aula aulas]
+      (view/show-aula aula))))
 
-(defn putDatashowInAula [datashow_id aula_id]
-  (let [aula (first (aulaDB/read-aula aula_id))]
+(defn get-available-datashow-for-aula [aula-id]
+  (let [aula (first (aulaDB/read-aula aula-id)) datashows (datashowDB/read-all-datashows) aulas (aulaDB/read-aula-on-day (:data aula))]
+    (if (empty? aulas)
+      (view/log "Não há aulas marcadas para este dia.")
+      (let [datashowsAlocados (set (map :id aulas)) datashowsDisponiveis (filter #(not (contains? datashowsAlocados (:id %))) datashows)]
+        (view/log "Listando datashows disponíveis para aula: ")
+        (doseq [datashow datashowsDisponiveis]
+          (view/show-datashow datashow))))))
+
+(defn put-datashow-in-aula [datashow-id aula-id]
+  (let [aula (first (aulaDB/read-aula aula-id))] 
     (if aula
-      (aulaDB/update-aula (assoc aula :id_datashow datashow_id))
-      (throw (Exception. (str "Aula com id " aula_id " não encontrada."))))))
+      (do (aulaDB/update-aula (assoc aula :id_datashow datashow-id))
+          (view/log "Datashow alocado com sucesso."))
+      (throw (Exception. (str "Aula com id " aula-id " não encontrada."))))))
