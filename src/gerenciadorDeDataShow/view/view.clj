@@ -57,8 +57,7 @@
     "3" (do
           (log "Listando professores: ")
           ((professor-controller/get-all-professors)))
-    "4" (do
-          (datashow-controller/new-datashow))
+    "4" ((datashow-controller/new-datashow))
     "5" (do
           (log "Digite o ID do datashow para remover:")
           (let [id (read-line)]

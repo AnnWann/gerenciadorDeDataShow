@@ -1,15 +1,17 @@
-(ns gerenciadorDeDataShow.database.connection)
+(ns gerenciadorDeDataShow.database.connection
+  (:require [next.jdbc :as jdbc]
+            [dotenv :refer [env app-env]]))
 
-(require '[next.jdbc :as jdbc])
+(def DB-FILE (env "DB_FILE"))
 
 (def db {:classname "org.sqlite.JDBC"
          :dbtype "sqlite"
-         :dbname "database.db"
+         :dbname DB-FILE
          :host :none})
 
 (def ds (jdbc/get-datasource db))
 
-(defn init-db [] 
+(defn init-db []
   (jdbc/execute! ds [
                      "CREATE TABLE IF NOT EXISTS datashows (
                     id INTEGER PRIMARY KEY AUTOINCREMENT);
