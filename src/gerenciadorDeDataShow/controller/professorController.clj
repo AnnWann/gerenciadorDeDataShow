@@ -1,12 +1,20 @@
 (ns gerenciadorDeDataShow.controller.professorController
   (:require
-    [gerenciadorDeDataShow.database.professorDB :as professorDB]))
+    [gerenciadorDeDataShow.database.professorDB :as professorDB]
+    [gerenciadorDeDataShow.view.view :as view]))
 
-(defn getProfessor [id]
-  (first (professorDB/read-professor id)))
+(defn new-professor [nome] 
+  (let [matricula (hash nome)]
+    (professorDB/create-professor {:matricula matricula :nome nome})
+    (view/log "Professor adicionado com sucesso!")
+    (view/log (str "Matricula: " matricula))))
 
-(defn newProfessor [nome matricula]
-  (professorDB/create-professor {:nome nome :matricula matricula}))
+(defn get-all-professors []
+  (let [professors (professorDB/read-all-professors)]
+    (view/log "Listando professores: ")
+    (doseq [professor professors]
+      (view/show-professor professor))))
 
-(defn eraseProfessor [id]
-  (professorDB/delete-professor id))
+(defn erase-professor [id]
+  (professorDB/delete-professor id)
+  (view/log "Professor removido com sucesso!"))
